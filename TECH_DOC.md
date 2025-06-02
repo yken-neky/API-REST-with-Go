@@ -99,7 +99,7 @@
 
 Para entender mejor cómo interactúan estos archivos, aquí un ejemplo del flujo de una petición HTTP:
 
-1. El cliente hace una petición a `/api/v1/items`
+1. El cliente hace una petición a `/api/v2/items`
 2. `routes.go` dirige la petición al handler correspondiente
 3. `middleware.go` aplica los middlewares configurados
 4. `item_handler.go` procesa la petición
@@ -148,7 +148,7 @@ El proyecto implementa una Arquitectura Hexagonal (Ports and Adapters) que:
 ```env
 # App
 APP_NAME=api-rest-with-go
-APP_VERSION=1.0.0
+APP_VERSION=2.0.0
 APP_ENV=development
 
 # Database
@@ -211,7 +211,7 @@ Endpoint simple para verificar disponibilidad.
 
 ### Items
 
-#### POST /api/v1/items
+#### POST /api/v2/items
 Crea un nuevo item.
 
 **Body**:
@@ -228,14 +228,14 @@ Crea un nuevo item.
 - 400: Error de validación
 - 500: Error interno del servidor
 
-#### GET /api/v1/items
+#### GET /api/v2/items
 Obtiene todos los items activos (no eliminados).
 
 **Respuestas**:
 - 200: Lista de items
 - 500: Error interno del servidor
 
-#### GET /api/v1/items/:id
+#### GET /api/v2/items/:id
 Obtiene un item por ID.
 
 **Respuestas**:
@@ -244,7 +244,7 @@ Obtiene un item por ID.
 - 400: ID inválido
 - 500: Error interno del servidor
 
-#### PUT /api/v1/items/:id
+#### PUT /api/v2/items/:id
 Actualiza un item existente.
 
 **Body**: Igual que en POST
@@ -256,7 +256,7 @@ Actualiza un item existente.
 - 409: Item eliminado (soft deleted)
 - 500: Error interno del servidor
 
-#### DELETE /api/v1/items/:id
+#### DELETE /api/v2/items/:id
 Realiza un soft delete del item.
 
 **Respuestas**:

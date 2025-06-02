@@ -75,11 +75,11 @@ SERVER_IDLE_TIMEOUT=60
 - GET `/ping` - Endpoint simple de verificación
 
 ### Gestión de Items
-- POST `/api/v1/items` - Crear un nuevo item
-- GET `/api/v1/items` - Obtener todos los items
-- GET `/api/v1/items/:id` - Obtener un item por ID
-- PUT `/api/v1/items/:id` - Actualizar un item
-- DELETE `/api/v1/items/:id` - Eliminar un item
+- POST `/api/v2/items` - Crear un nuevo item
+- GET `/api/v2/items` - Obtener todos los items
+- GET `/api/v2/items/:id` - Obtener un item por ID
+- PUT `/api/v2/items/:id` - Actualizar un item
+- DELETE `/api/v2/items/:id` - Eliminar un item
 
 ## Estructura del Proyecto
 
