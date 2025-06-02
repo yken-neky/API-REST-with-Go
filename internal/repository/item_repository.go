@@ -39,12 +39,12 @@ func (r *ItemRepository) Update(item *models.Item) error {
 	var existingItem models.Item
 	result := r.db.Unscoped().First(&existingItem, item.ID)
 	if result.Error != nil {
-		return fmt.Errorf("Item with ID %d not found", item.ID)
+		return fmt.Errorf("item with id %d not found", item.ID)
 	}
 
 	// If item is soft deleted, return error
 	if !existingItem.DeletedAt.Time.IsZero() {
-		return fmt.Errorf("Item with ID %d has been deleted", item.ID)
+		return fmt.Errorf("item with id %d has been deleted", item.ID)
 	}
 
 	// Update only if item exists and is not deleted
@@ -68,7 +68,7 @@ func (r *ItemRepository) Delete(id uint) error {
 		return result.Error
 	}
 	if result.RowsAffected == 0 {
-		return fmt.Errorf("item with ID %d not found", id)
+		return fmt.Errorf("item with id %d not found", id)
 	}
 	return nil
 }
