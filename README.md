@@ -38,7 +38,7 @@ graph LR
 ```env
 # Aplicación
 APP_NAME=api-rest-with-go
-APP_VERSION=1.0.0
+APP_VERSION=2.0.0
 APP_ENV=development
 
 # Base de Datos
