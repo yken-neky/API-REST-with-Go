@@ -24,3 +24,6 @@ jobs:
     - name: Build
       run: go build -v ./cmd/api/main.go
 
+    - name: Run
+      run: go run -v ./cmd/api/main.go
+
