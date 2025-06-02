@@ -2,65 +2,42 @@ package main
 
 import (
 	"log"
-	"os"
 
-	"api-rest-with-go/internal/handlers"
-	"api-rest-with-go/internal/models"
-	"api-rest-with-go/internal/repository"
-	"api-rest-with-go/internal/service"
-	"api-rest-with-go/pkg/database"
-
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
+	"api-rest-with-go/internal/config"
+	"api-rest-with-go/internal/core/domain"
+	"api-rest-with-go/internal/core/ports"
+	"api-rest-with-go/internal/core/services"
+	"api-rest-with-go/internal/infrastructure/database/postgres"
+	"api-rest-with-go/internal/infrastructure/server"
 )
 
 func main() {
-	// Load environment variables
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// Cargar configuración
+	cfg := config.GetConfig()
 
-	// Initialize database
-	db, err := database.InitDB()
+	// Inicializar base de datos
+	db, err := postgres.NewConnection(cfg)
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		log.Fatal("failed to connect to database:", err)
 	}
 
-	// Auto migrate the schema
-	err = db.AutoMigrate(&models.Item{})
-	if err != nil {
-		log.Fatal("Failed to migrate database:", err)
+	// Auto migrate
+	if err := db.AutoMigrate(&domain.Item{}); err != nil {
+		log.Fatal("failed to migrate database:", err)
 	}
 
-	// Initialize dependencies
-	itemRepo := repository.NewItemRepository()
-	itemService := service.NewItemService(itemRepo)
-	itemHandler := handlers.NewItemHandler(itemService)
+	// Inicializar repositorios
+	itemRepo := postgres.NewItemRepository(db)
 
-	// Setup Gin router
-	router := gin.Default()
+	// Inicializar servicios
+	itemService := services.NewItemService(itemRepo)
 
-	// API routes
-	v1 := router.Group("/api/v1")
-	{
-		items := v1.Group("/items")
-		{
-			items.POST("/", itemHandler.CreateItem)
-			items.GET("/", itemHandler.GetAllItems)
-			items.GET("/:id", itemHandler.GetItem)
-			items.PUT("/:id", itemHandler.UpdateItem)
-			items.DELETE("/:id", itemHandler.DeleteItem)
-		}
-	}
+	// Inicializar y arrancar servidor
+	srv := server.NewServer(cfg, &ports.Service{
+		Items: itemService,
+	}, db)
 
-	// Start server
-	port := os.Getenv("SERVER_PORT")
-	if port == "" {
-		port = "8080"
+	if err := srv.Start(); err != nil {
+		log.Fatal(err)
 	}
-	
-	log.Printf("Server starting on port %s", port)
-	if err := router.Run(":" + port); err != nil {
-		log.Fatal("Failed to start server:", err)
-	}
-} 
+}
